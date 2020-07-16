@@ -11,6 +11,9 @@
 #include "config.h"
 #include "illianoWiFi.h"
 #include "getAPI.h"
+#define RELAY 0
+#define LED 2
+unsigned char status_RELAY = 0;
 
 
 void setup() {
@@ -20,6 +23,13 @@ void setup() {
   Serial.begin(115200); //ตั้งค่าใช้งาน serial ที่ baudrate 115200
   String ip = connectWiFi();  // สั่งให้เชื่อมต่อกับ AP
   Blynk.virtualWrite(V0, ip); //ส่งไปที่ Blynk
+
+  ///////// Relay ////////////
+  pinMode(RELAY, OUTPUT);
+  pinMode(LED, OUTPUT);
+  digitalWrite(LED, HIGH);
+  ////////////////////////////
+  
   delay(5000);
 }
 
