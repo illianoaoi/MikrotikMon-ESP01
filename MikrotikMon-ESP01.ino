@@ -1,8 +1,11 @@
 /********************************************************
   Nirun Leeyagart
   https://www.facebook.com/illianoaoi
+  leeyagart@gmail.com
 
   Monitor mikrotik Temp, CPU, WAN1 และสั่งเปิดปิดพัดลมตามอุณภูมิที่ต้องการ
+  Version 1.0
+  Release Date : 16/07/2020
 ********************************************************/
 
 #include <Arduino.h>
@@ -11,36 +14,9 @@
 #include "config.h"
 #include "illianoWiFi.h"
 #include "getAPI.h"
-#define RELAY 0
-#define LED 2
+#define RELAY 0 //รีเลย์เป็นขา 0
+#define LED 2 //ไฟ LED เป็นขา 2
 unsigned char status_RELAY = 0;
-
-BLYNK_WRITE(V7)
-{
-  int pinValue = param.asInt(); 
-  
-  if (pinValue == 1)
-  {
-    status_RELAY = 1;
-    digitalWrite(RELAY, HIGH);
-    Serial.println("RELAY ON");
-    WidgetLED led1(V5);
-    led1.on();
-    digitalWrite(LED, HIGH);
-    
-  }
-  else if (pinValue == 0)
-  {
-    status_RELAY = 0;
-    digitalWrite(RELAY, LOW);
-    Serial.println("RELAY OFF");
-    WidgetLED led1(V5);
-    led1.off();
-    digitalWrite(LED, LOW);
-  }
-  
-}
-
 
 void setup() {
   //Blynk เชื่อมต่อกับ Server
@@ -48,15 +24,14 @@ void setup() {
 
   Serial.begin(115200); //ตั้งค่าใช้งาน serial ที่ baudrate 115200
   String ip = connectWiFi();  // สั่งให้เชื่อมต่อกับ AP
-  Blynk.virtualWrite(V0, ip); //ส่งไปที่ Blynk
+  Blynk.virtualWrite(V0, ip); //ส่งเลขไอพีไปที่ Blynk
 
     ///////// Relay ////////////
     pinMode(RELAY, OUTPUT);
     pinMode(LED, OUTPUT);
-    digitalWrite(LED, HIGH);
-    Blynk.virtualWrite(V7, 0);
-    WidgetLED led1(V5);
-    led1.off();
+    digitalWrite(LED, HIGH);  //ปิดไฟ LED
+    digitalWrite(RELAY, LOW); //ปิดรีเลย์
+    Blynk.virtualWrite(V5, "ปิด"); //ส่งไปที่ Blynk
     ////////////////////////////
   
   delay(5000);
@@ -74,27 +49,21 @@ void loop() {
 
   int Temp = getTemp().toInt();
 
-  if (Temp >= 33)
+  if (Temp >= onRelay)
   {
     status_RELAY = 1;
-    digitalWrite(RELAY, HIGH);
+    digitalWrite(RELAY, HIGH);  //เปิดรีเลย์
     Serial.println("RELAY ON");
-    WidgetLED led1(V5);
-    led1.on();
-    digitalWrite(LED, HIGH);
-    Blynk.virtualWrite(V7, 1);
-    
+    Blynk.virtualWrite(V5, "เปิด"); //ส่งไปที่ Blynk
+    digitalWrite(LED, LOW); //เปิดไฟ LED
   }
-  else if (Temp <= 32)
+  else if (Temp <= offRelay)
   {
     status_RELAY = 0;
-    digitalWrite(RELAY, LOW);
+    digitalWrite(RELAY, LOW); //ปิดรีเลย์
     Serial.println("RELAY OFF");
-    WidgetLED led1(V5);
-    led1.off();
-    digitalWrite(LED, LOW);
-    Blynk.virtualWrite(V7, 0);
-    
+    Blynk.virtualWrite(V5, "ปิด"); //ส่งไปที่ Blynk
+    digitalWrite(LED, HIGH);  //ปิดไฟ LED
   }
   
   delay(Refesh);
