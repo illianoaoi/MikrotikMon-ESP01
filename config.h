@@ -9,7 +9,7 @@ int Refesh = 1000; //หน่วงเวลา 1 วินาที
 
 
 //ตั้งค่า Blynk Token
-char auth[] = "d_MBl6wUHH68xUDtEixGZAOaWSNppnDb";
+char auth[] = "xxx";
 
 int onRelay = 34; //อุณภูมิที่พัดลมจะทำงาน
 int offRelay = 32;  //อุณภูมิที่พัดลมจะหยุดทำงาน
