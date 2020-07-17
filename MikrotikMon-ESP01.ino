@@ -16,6 +16,7 @@
 #include "getAPI.h"
 #define RELAY 0 //รีเลย์เป็นขา 0
 #define LED 2 //ไฟ LED เป็นขา 2
+#include <TridentTD_LineNotify.h>
 unsigned char status_RELAY = 0;
 
 void setup() {
@@ -33,6 +34,9 @@ void setup() {
     digitalWrite(RELAY, LOW); //ปิดรีเลย์
     Blynk.virtualWrite(V5, "ปิด"); //ส่งไปที่ Blynk
     ////////////////////////////
+
+  // กำหนด Line Token
+  LINE.setToken(LINE_TOKEN);
   
   delay(5000);
 }
@@ -64,6 +68,10 @@ void loop() {
     Serial.println("RELAY OFF");
     Blynk.virtualWrite(V5, "ปิด"); //ส่งไปที่ Blynk
     digitalWrite(LED, HIGH);  //ปิดไฟ LED
+  }
+  if (Temp >= OverHeat)
+  {
+    LINE.notify("อุณหภูมิ เกินกำหนด พัดลมเสียแน่นวล");
   }
   
   delay(Refesh);

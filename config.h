@@ -13,3 +13,7 @@ char auth[] = "d_MBl6wUHH68xUDtEixGZAOaWSNppnDb";
 
 int onRelay = 34; //อุณภูมิที่พัดลมจะทำงาน
 int offRelay = 32;  //อุณภูมิที่พัดลมจะหยุดทำงาน
+int OverHeat = 38;  //อุณภูมิที่จะแจ้งเตือนผ่านไลน์
+
+// Line config
+#define LINE_TOKEN "XXXX" // แก้ LINE TOKEN
